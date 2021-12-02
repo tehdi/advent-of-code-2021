@@ -1,6 +1,7 @@
 package main
  
 import (
+    "flag"
     "fmt"
     "os"
     "bufio"
@@ -9,7 +10,10 @@ import (
 )
  
 func main() {
-    file, fileError := os.Open("input")
+    inputFile := flag.String("input-file", "", "file to use as input")
+    flag.Parse()
+
+    file, fileError := os.Open(*inputFile)
     if fileError != nil {
         fmt.Println(fileError)
     }
