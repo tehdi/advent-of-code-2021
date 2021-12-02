@@ -1,5 +1,5 @@
 package main
- 
+
 import (
     "flag"
     "fmt"
@@ -7,7 +7,7 @@ import (
     "bufio"
     "strconv"
 )
- 
+
 func main() {
     inputFile := flag.String("input-file", "", "file to use as input")
     flag.Parse()
@@ -31,7 +31,7 @@ func main() {
             fmt.Println("first round. nothing to compare")
             continue
         }
-        
+
         if current > last {
             fmt.Println("increased")
             increases += 1
@@ -39,10 +39,10 @@ func main() {
             fmt.Println("did not increase")
         }
     }
-        
+
     if scannerError := scanner.Err(); scannerError != nil {
         fmt.Println(scannerError)
     }
-        
+
     fmt.Printf("Found %d increases\n", increases)
 }

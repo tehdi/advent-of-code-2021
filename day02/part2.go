@@ -1,5 +1,5 @@
 package main
- 
+
 import (
     "flag"
     "fmt"
@@ -8,7 +8,7 @@ import (
     "strconv"
     "strings"
 )
- 
+
 func main() {
     inputFile := flag.String("input-file", "", "file to use as input")
     flag.Parse()
@@ -39,7 +39,7 @@ func main() {
         }
         fmt.Printf("%s %d: a=%d => h:%d * d:%d = %d\n", direction, value, aim, horizontal, depth, horizontal * depth)
     }
-        
+
     if scannerError := scanner.Err(); scannerError != nil {
         fmt.Println(scannerError)
     }
