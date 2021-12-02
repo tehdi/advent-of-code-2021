@@ -1,0 +1,22 @@
+https://adventofcode.com/2021/day/2
+https://adventofcode.com/2021/day/2/input
+
+Part 1
+
+forward X increases the horizontal position by X units.
+down X increases the depth by X units.
+up X decreases the depth by X units.
+
+Your horizontal position and depth both start at 0
+
+Calculate the horizontal position and depth you would have after following the planned course.
+What do you get if you multiply your final horizontal position by your final depth?
+
+Part 2
+down X increases your aim by X units.
+up X decreases your aim by X units.
+forward X does two things:
+    It increases your horizontal position by X units.
+    It increases your depth by your aim multiplied by X.
+
+What do you get if you multiply your final horizontal position by your final depth?
