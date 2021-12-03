@@ -26,3 +26,18 @@ for each entry (position) in map,
 I now have binary values as strings for the gamma and epsilon rates. make them numbers instead. this is a lot of type conversions
 multiply gamma rate by epsilon rate => power consumption
 print power consumption as a decimal value
+
+
+Part 2
+oxygen generator rating:
+    * tie breaker: use the 1
+    find the most common bit in the first position
+    filter out the other numbers
+    find the most common bit in the second position of the remaining numbers
+    filter out the other numbers
+    continue until you're down to 1 number
+CO2 scrubber rating:
+    * tie breaker: use the 0
+    same as O2 but use least common bits
+life support rating:
+    O2 * CO2
