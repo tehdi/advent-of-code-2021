@@ -1,0 +1,28 @@
+https://adventofcode.com/2021/day/3
+https://adventofcode.com/2021/day/3/input
+
+Part 1
+given a list of binary numbers:
+- find the most common bit in the corresponding position of all numbers in the diagnostic report. this is the gamma rate
+- invert the gamma rate to get the epsilon rate (if gamma is 1001, then epsilon is 0110)
+- multiply the gamma rate by the epsilon rate to get the power consumption
+
+for each binary number => treated as a string to it's for each line in file
+    entries++
+    for each digit in binary number => treated as a string so it's for each character in string
+        map[position] += character.toint
+
+# this covers both cases, total entries = even or odd
+majority count = entries / 2 rounded down + 1, or math.Floor(float64(entries) / 2) + 1
+
+for each entry (position) in map,
+    if value >= majority count,
+        append 1 to gamma rate
+        append 0 to epsilon rate
+    else (value < majority count),
+        append 0 to gamma rate
+        append 1 to epsilon rate
+
+I now have binary values as strings for the gamma and epsilon rates. make them numbers instead. this is a lot of type conversions
+multiply gamma rate by epsilon rate => power consumption
+print power consumption as a decimal value
