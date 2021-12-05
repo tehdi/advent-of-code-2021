@@ -40,3 +40,7 @@ if any of those have 5 numbers marked, then this board just won!
 
 what if I just use a bunch of 2D arrays instead?
 why then I wouldn't learn about structs!
+
+
+Part 2
+Okay smarty pants, what'll the score be for the board that wins last?
