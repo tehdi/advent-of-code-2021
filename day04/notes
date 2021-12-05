@@ -1,0 +1,42 @@
+https://adventofcode.com/2021/day/4
+https://adventofcode.com/2021/day/4/input
+
+Part 1
+Play Bingo!
+Find the board that will win first
+For the winning board:
+    1: take the number that was called that caused the win
+    2: find the sum of all the unmarked numbers
+    multiply 1 and 2 together
+
+can there be a tie? can more than one board win on the same number? assume no for now
+
+the first line in the input is the numbers in the order they'll be called, comma-separated (no space)
+then a blank line, then a board, then another blank line, then another board, etc
+
+read in the first line (numbers that'll be called, in order)
+every time you find a blank line, start a new board
+build each board as a... something that lets me get rows, columns, and diagonals all pretty easily
+    hey I think it's time to look at whatever Go uses for what I think of as classes!
+    turns out they're structs:
+        https://golangbot.com/structs-instead-of-classes/
+        https://gobyexample.com/structs
+        https://gobyexample.com/methods
+        https://golangdocs.com/methods-in-golang
+then some sort of collection of boards
+    array or map is probably the easiest for this
+
+apply the called number to each board:
+need a way to flag numbers as called. can I just blank them out? only the unmarked numbers and the final winning call matter
+    or just make a "marked" flag. a flag seems clearer
+when marking a number, ++ the count of marked numbers in this row, column, and maybe diagonal. this'll make "win?" eval easy
+
+how to check if a board won?
+for the number you just marked,
+    check each row
+    and each column
+    and if it's on any diagonals check those too
+if any of those have 5 numbers marked, then this board just won!
+
+what if I just use a bunch of 2D arrays instead?
+why then I wouldn't learn about structs!
