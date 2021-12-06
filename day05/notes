@@ -12,3 +12,10 @@ At how many points do at least two lines overlap?
 the largest number in my input is 990
 
 input example: 498,436 -> 498,932
+
+
+Part 2
+now add in diagonals and answer the same question about line overlaps
+
+how to decide if two points form a diagonal line?
+    I'm gonna go with: abs(x1-x2) == abs(y1-y2)
