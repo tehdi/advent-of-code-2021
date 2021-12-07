@@ -9,7 +9,6 @@ import (
     "strconv"
 )
 
-
 func main() {
     inputFile := flag.String("input-file", "", "file to use as input")
     flag.Parse()
