@@ -1,0 +1,28 @@
+https://adventofcode.com/2021/day/7
+https://adventofcode.com/2021/day/7/input
+
+Part 1
+Each change of 1 step in horizontal position of a single crab costs 1 fuel
+given: a list of the horizontal position of each crab
+Determine the horizontal position that the crabs can align to using the least fuel possible.
+How much fuel must they spend to align to that position?
+
+my input has 1000 crabmarines
+
+for example: 16,1,2,0,4,2,7,1,2,14 => position 2, for a total of 37 fuel
+16 -> 2: 14
+ 1 -> 2:  1
+ 2 -> 2:  0
+ 0 -> 2:  2
+ 4 -> 2:  2
+ 2 -> 2:  0
+ 7 -> 2:  5
+ 1 -> 2:  1
+ 2 -> 2:  0
+14 -> 2: 12
+more expensive options are position 1 (41 fuel), position 3 (39 fuel), or position 10 (71 fuel)
+
+16+1+2+0+4+2+7+1+2+14 = 49
+10 entries
+median = 2 -> hey that seems like a useful relationship
+
