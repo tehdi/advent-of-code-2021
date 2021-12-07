@@ -26,3 +26,27 @@ more expensive options are position 1 (41 fuel), position 3 (39 fuel), or positi
 10 entries
 median = 2 -> hey that seems like a useful relationship
 
+
+Part 2
+actually each change of 1 step in horizontal position costs 1 more unit of fuel than the last:
+    the first step costs 1
+    the second step costs 2
+    the third step costs 3
+    and so on
+Now how much fuel must they spend to align to the best position?
+
+for example: 16,1,2,0,4,2,7,1,2,14 => position 5, for a total of 168 fuel
+    16 -> 5: 66 : 11 steps = 1+2+3+..+11 = (number of steps + 1) * (number of steps / 2) => sum of an arithmetic series
+     1 -> 5: 10
+     2 -> 5:  6
+     0 -> 5: 15
+     4 -> 5:  1
+     2 -> 5:  6
+     7 -> 5:  3
+     1 -> 5: 10
+     2 -> 5:  6
+    14 -> 5: 45
+
+16+1+2+0+4+2+7+1+2+14 = 49
+10 entries
+average = 4.9 -> hey that seems like a useful relationship
