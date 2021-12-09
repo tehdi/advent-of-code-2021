@@ -1,0 +1,45 @@
+https://adventofcode.com/2021/day/8
+https://adventofcode.com/2021/day/8/input
+
+Part 1
+the four-digit seven-segment displays in your submarine are malfunctioning
+the signals which control the segments have been mixed up
+the wires are randomly connected to segments
+each 4-digit display is broken in a different way, but it's consistent within a display
+
+the segments are identified by letters like this:
+  0:      1:      2:      3:      4:
+ aaaa    ....    aaaa    aaaa    ....
+b    c  .    c  .    c  .    c  b    c
+b    c  .    c  .    c  .    c  b    c
+ ....    ....    dddd    dddd    dddd
+e    f  .    f  e    .  .    f  .    f
+e    f  .    f  e    .  .    f  .    f
+ gggg    ....    gggg    gggg    ....
+
+  5:      6:      7:      8:      9:
+ aaaa    aaaa    aaaa    aaaa    aaaa
+b    .  b    .  .    c  b    c  b    c
+b    .  b    .  .    c  b    c  b    c
+ dddd    dddd    ....    dddd    dddd
+.    f  e    f  .    f  e    f  .    f
+.    f  e    f  .    f  e    f  .    f
+ gggg    gggg    ....    gggg    gggg
+
+the digits 1, 4, 7, and 8 are easy because they each use a unique number of segments, so part 1 is to count those
+0: 6 -> shared with 6, 9
+1: 2 -> unique
+2: 5 -> shared with 3, 5
+3: 5 -> shared with 2, 5
+4: 4 -> unique
+5: 5 -> shared with 2, 3
+6: 6 -> shared with 0, 9
+7: 3 -> unique
+8: 7 -> unique
+9: 6 -> shared with 0, 6
+
+input:
+    each line has all ten unique signal patterns for a single four digit output value, followed by a single four digit output value
+    the code may be different per line
+example:     acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
+explanation: the ten unique observed patterns                           | the display
