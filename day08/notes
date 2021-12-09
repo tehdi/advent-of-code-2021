@@ -27,6 +27,16 @@ b    .  b    .  .    c  b    c  b    c
  gggg    gggg    ....    gggg    gggg
 
 the digits 1, 4, 7, and 8 are easy because they each use a unique number of segments, so part 1 is to count those
+
+  1:      4:      7:      8:
+ ....    ....    aaaa    aaaa
+.    c  b    c  .    c  b    c
+.    c  b    c  .    c  b    c
+ ....    dddd    ....    dddd
+.    f  .    f  .    f  e    f
+.    f  .    f  .    f  e    f
+ ....    ....    ....    gggg
+
 0: 6 -> shared with 6, 9
 1: 2 -> unique
 2: 5 -> shared with 3, 5
@@ -43,3 +53,70 @@ input:
     the code may be different per line
 example:     acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
 explanation: the ten unique observed patterns                           | the display
+
+
+Part 2
+you should now be able to determine the remaining digits
+For each entry, determine all of the wire/segment connections and decode the four-digit output values.
+What do you get if you add up all of the output values?
+
+SUPER IMPORTANT NOTE
+while each number will use the same letters in a given entry, they aren't guaranteed to be in the same order
+eg: my input has one entry containing "egf efg"
+
+Easy numbers:
+1 (2):  4 (4):  7 (3):  8 (7):
+ ....    ....    aaaa    aaaa
+.    c  b    c  .    c  b    c
+.    c  b    c  .    c  b    c
+ ....    dddd    ....    dddd
+.    f  .    f  .    f  e    f
+.    f  .    f  .    f  e    f
+ ....    ....    ....    gggg
+
+All numbers:
+0 (6):  1 (2):  2 (5):  3 (5):  4 (4):
+ aaaa    ....    aaaa    aaaa    ....
+b    c  .    c  .    c  .    c  b    c
+b    c  .    c  .    c  .    c  b    c
+ ....    ....    dddd    dddd    dddd
+e    f  .    f  e    .  .    f  .    f
+e    f  .    f  e    .  .    f  .    f
+ gggg    ....    gggg    gggg    ....
+
+5 (5):  6 (6):  7 (3):  8 (7):  9 (6):
+ aaaa    aaaa    aaaa    aaaa    aaaa
+b    .  b    .  .    c  b    c  b    c
+b    .  b    .  .    c  b    c  b    c
+ dddd    dddd    ....    dddd    dddd
+.    f  e    f  .    f  e    f  .    f
+.    f  e    f  .    f  e    f  .    f
+ gggg    gggg    ....    gggg    gggg
+
+
+time for tables!
+top: letters
+left: numbers
+right: count of letters in that number (x's in that row)
+righter: translate x and blank into 1 and 0 to uniquely represent a number based on its segments
+bottom: count of numbers containing that letter (x's in that column)
+
+   a  b  c  d  e  f  g
+1        x        x     2
+4     x  x  x     x     4
+7  x     x        x     3
+8  x  x  x  x  x  x  x  7
+   2  2  4  2  1  4  1
+
+   a  b  c  d  e  f  g
+0  x  x  x     x  x  x  6  1110111 => 119
+1        x        x     2  0010010 =>  18
+2  x     x  x  x     x  5  1011101 =>  93
+3  x     x  x     x  x  5  1011011 =>  91
+4     x  x  x     x     4  0111010 =>  58
+5  x  x     x     x  x  5  1101011 => 107
+6  x  x     x  x  x  x  6  1101111 => 111
+7  x     x        x     3  1010010 =>  82
+8  x  x  x  x  x  x  x  7  1111111 => 127
+9  x  x  x  x     x  x  6  1111011 => 123
+   8  6  8  7  4  9  7
