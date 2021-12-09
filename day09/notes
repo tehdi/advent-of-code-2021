@@ -1,0 +1,13 @@
+https://adventofcode.com/2021/day/9
+https://adventofcode.com/2021/day/9/input
+
+Part 1
+a low point is a point on the grid that's a lower number than any adjacent points
+adjacent points are up, down, left, and right
+unless it's a side or corner in which case one or two of those will be missing
+the risk level of a low point is 1 plus its height
+What is the sum of the risk levels of all low points on your heightmap?
+
+can I just use a 2d array for this one?
+compare each value to the value at adjacent points
+easy enough
