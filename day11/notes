@@ -1,0 +1,16 @@
+https://adventofcode.com/2021/day/11
+https://adventofcode.com/2021/day/11/input
+
+
+Part 1
+input: energy level of each octopus (value between 0 and 9)
+How many total (cumulative) flashes are there after 100 steps?
+
+During a single step, the following occurs:
+    1: First, the energy level of each octopus increases by 1.
+    2: Then, any octopus with an energy level greater than 9 flashes.
+       This increases the energy level of all adjacent octopuses by 1, including octopuses that are diagonally adjacent.
+       If this causes an octopus to have an energy level greater than 9, it also flashes.
+       This process continues as long as new octopuses keep having their energy level increased beyond 9.
+       An octopus can only flash at most once per step.
+    3: Finally, any octopus that flashed during this step has its energy level set to 0, as it used all of its energy to flash.
