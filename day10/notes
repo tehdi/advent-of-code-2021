@@ -37,3 +37,15 @@ but what this problem really wants is a stack. which Go doesn't have built in bu
 if you get to the end of the line without any problems, but you have characters left on the stack:
     that's an incomplete line that we don't care about for this part
     but I bet we will in Part 2
+
+
+Part 2
+Find the completion string for each incomplete line, score the completion strings, and sort the scores.
+What is the middle score? (there will always be an odd number of scores to consider)
+
+Start with a total score of 0
+for each character, multiply the total score by 5 and then increase the total score by the point value given for the character in the following table:
+    ): 1 point
+    ]: 2 points
+    }: 3 points
+    >: 4 points
