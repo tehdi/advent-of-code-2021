@@ -14,3 +14,7 @@ During a single step, the following occurs:
        This process continues as long as new octopuses keep having their energy level increased beyond 9.
        An octopus can only flash at most once per step.
     3: Finally, any octopus that flashed during this step has its energy level set to 0, as it used all of its energy to flash.
+
+
+Part 2
+What is the first step during which all octopuses flash?
