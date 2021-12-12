@@ -1,0 +1,39 @@
+https://adventofcode.com/2021/day/10
+https://adventofcode.com/2021/day/10/input
+
+
+Part 1
+Find the first illegal character in each corrupted line of the navigation subsystem
+What is the total syntax error score for those errors?
+
+Every chunk must open and close with one of four legal pairs of matching characters:
+    If a chunk opens with (, it must close with ).
+    If a chunk opens with [, it must close with ].
+    If a chunk opens with {, it must close with }.
+    If a chunk opens with <, it must close with >.
+chunks contain zero or more other chunks
+Adjacent chunks are not separated by any delimiter
+Some lines are incomplete, but others are corrupted
+A corrupted line is one where a chunk closes with the wrong character
+
+eg: {([(<{}[<>[]}>{[]{[(<()>
+
+To calculate the syntax error score for a line, take the first illegal character on the line and look it up in the following table:
+    ): 3 points
+    ]: 57 points
+    }: 1197 points
+    >: 25137 points
+
+I could do this by going over the line multiple times
+each time removing adjacent matching open-close pairs
+and calling it corrupted once I find an adjacent open-close non-pair
+using the example above, that would be:
+{([(<{}[<>[]}>{[]{[(<()>
+     ^^ ^^^^   ^^    ^^
+{([(<[}>{{[(<>
+     !!     ^^
+
+but what this problem really wants is a stack. which Go doesn't have built in but don't worry! I found one.
+if you get to the end of the line without any problems, but you have characters left on the stack:
+    that's an incomplete line that we don't care about for this part
+    but I bet we will in Part 2
