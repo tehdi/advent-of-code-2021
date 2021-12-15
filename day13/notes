@@ -16,3 +16,37 @@ I think I can cheat part 1 by plotting with that first fold already in mind inst
 this fold will keep all y values the same but transform any x values larger than the fold line
     eg. any dots on x=800=(655+145) will become x=(655-145)=510 instead
 x => 655-abs(655-x)
+
+
+Part 2
+Finish folding the transparent paper according to the instructions. The manual says the code is always eight capital letters.
+What code do you use to activate the infrared thermal imaging camera system?
+
+I will continue cheating. These are all my folds, in order:
+fold along x=655
+fold along y=447
+fold along x=327
+fold along y=223
+fold along x=163
+fold along y=111
+fold along x=81
+fold along y=55
+fold along x=40
+fold along y=27
+fold along y=13
+fold along y=6
+
+Sorted by x/y but otherwise still in order:
+fold along x=655
+fold along x=327
+fold along x=163
+fold along x=81
+fold along x=40
+
+fold along y=447
+fold along y=223
+fold along y=111
+fold along y=55
+fold along y=27
+fold along y=13
+fold along y=6
