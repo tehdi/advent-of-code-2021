@@ -1,0 +1,18 @@
+https://adventofcode.com/2021/day/13
+https://adventofcode.com/2021/day/13/input
+
+Part 1
+You have a sheet of transparent paper with dots on it
+the dots' locations are represented by 0-indexed x,y pairs where 0,0 is the top left corner
+you need to fold the paper along the given x or y line(s)
+dots will never appear exactly on a fold line
+
+How many dots are visible after completing just the first fold instruction on your transparent paper?
+
+my first fold instruction is:
+fold along x=655
+
+I think I can cheat part 1 by plotting with that first fold already in mind instead of transforming after the fact
+this fold will keep all y values the same but transform any x values larger than the fold line
+    eg. any dots on x=800=(655+145) will become x=(655-145)=510 instead
+x => 655-abs(655-x)
