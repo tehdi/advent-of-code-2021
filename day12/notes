@@ -1,0 +1,44 @@
+https://adventofcode.com/2021/day/12
+https://adventofcode.com/2021/day/12/input
+
+Part 1
+How many paths through this cave system are there that visit small caves at most once?
+
+find all the paths from <start> to <end>
+<BIG> caves (uppercase letters) can be visited multiple times
+<small> caves (lowercase letters) can only be visited a maximum of once
+
+example input:
+    start-A
+    start-b
+    A-c
+    A-b
+    b-d
+    A-end
+    b-end
+
+drawn out:
+    start
+    /   \
+c--A-----b--d
+    \   /
+     end
+
+available paths:
+    start,A,b,A,c,A,end
+    start,A,b,A,end
+    start,A,b,end
+    start,A,c,A,b,A,end
+    start,A,c,A,b,end
+    start,A,c,A,end
+    start,A,end
+    start,b,A,c,A,end
+    start,b,A,end
+    start,b,end
+
+d is never visited, because that would mean visiting b at least twice, which isn't allowed
+
+if a small cave has only one connection, and it's to another small cave, that first small cave is not accessible
+    in my input, all of my small caves are connected to at least one large cave
+if a large cave connects to another large cave, you can go back and forth forever
+    I don't have any of these connections in my input
