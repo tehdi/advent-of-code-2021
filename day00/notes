@@ -4,4 +4,14 @@ https://pkg.go.dev/std
 https://gobyexample.com/
 https://golangdocs.com/
 https://golangbot.com/
+
 https://golangdocs.com/profiling-in-golang
+    docker run -it \
+        -v "$PWD":/usr/src/myapp \
+        -w /usr/src/myapp \
+        golang:1.17
+    https://go.dev/doc/tutorial/create-module -> go mod init example.com/m/v2
+    go test -cpuprofile cpu.prof -bench .
+    go tool pprof cpu.prof
+        help
+        top10 -cum
