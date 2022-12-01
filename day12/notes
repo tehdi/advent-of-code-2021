@@ -42,3 +42,10 @@ if a small cave has only one connection, and it's to another small cave, that fi
     in my input, all of my small caves are connected to at least one large cave
 if a large cave connects to another large cave, you can go back and forth forever
     I don't have any of these connections in my input
+
+
+Part 2
+the caves named start and end can only be visited exactly once each
+big caves can be visited any number of times
+a single small cave can be visited at most twice
+the remaining small caves can be visited at most once
