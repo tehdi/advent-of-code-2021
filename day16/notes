@@ -1,0 +1,105 @@
+0 = 0000 =>    0
+1 = 0001 =>    1
+2 = 0010 =>   10
+3 = 0011 =>   11
+4 = 0100 =>  100
+5 = 0101 =>  101
+6 = 0110 =>  110
+7 = 0111 =>  111
+8 = 1000 => 1000
+9 = 1001 => 1001
+A = 1010 => 1010
+B = 1011 => 1011
+C = 1100 => 1100
+D = 1101 => 1101
+E = 1110 => 1110
+F = 1111 => 1111
+
+The BITS transmission contains a single packet at its outermost layer
+all numbers encoded in any packet are represented as binary
+might encode a few extra 0 bits at the end; these should be ignored
+begins with a standard header
+    - the first three bits encode the packet version
+    - the next three bits encode the packet type ID
+        - type ID 4: literal value. encodes a single binary number
+          the binary number is padded with leading zeroes until its length is a multiple of four bits, then it is broken into groups of four bits
+          Each group is prefixed by a 1 except the last group, which is prefixed by a 0
+          These groups of five bits immediately follow the packet header
+          Example:
+            D   2   F   E   2   8
+            110100101111111000101000
+            ^^^ version = 110 = 6
+               ^^^ type = 100 = 4 = literal value
+                  ^^^^^ 10111 = prefix 1 means not the last group. value 0111
+                       ^^^^^ 11110 = value 1110
+                            ^^^^^ 00101 = prefix 0 means last group. value = 0101
+                                 ^^^ 000 = extra bits. ignore.
+            total value = 011111100101 = 2021
+        - other type ID: operator that performs some calculation on one or more sub-packets contained within
+          contains one or more packets
+          bit immediately after the packet header = length type ID
+          - length type ID: 0
+            next 15 bits = number that represents the length in bits of the contained sub-packets
+          - length type ID: 1
+            next 11 bits = number that represents the number of the contained sub-packets
+          Example:
+            3   8   0   0   6   F   4   5   2   9   1   2   0   0
+            00111000000000000110111101000101001010010001001000000000
+            ^^^ version 001 = 1
+               ^^^ type 110 = 6 = operator
+                  ^ length type ID 0 = look for next 15 bits
+                   ^^^^^^^^^^^^^^^ length of sub-packets = 000000000011011 = 11011 = 27
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ subpackets = 110100010100101001000100100
+                                                             ^^^^^^^ extra bits 0000000
+                subpackets
+                    110100010100101001000100100
+                    ^^^ version 110 = 6
+                       ^^^ type 100 = 4 = literal value
+                          ^^^^^ 01010 = prefix 0 means last group. value = 1010 = A
+                    total value of first sub-packet: A = 10
+                               0101001000100100
+                               ^^^ version 010 = 2
+                                 ^^^ type 100 = 4 = literal value
+                                    ^^^^^ 10001 prefix 1 means not last group. value = 0001
+                                         ^^^^^ 00100 prefix 0 means last group. value = 0100
+                    total value of second sub-packet: 00010100 = 20
+
+Another example:
+    E   E   0   0   D   4   0   C   8   2   3   0   6   0
+    11101110000000001101010000001100100000100011000001100000
+    ^^^ version 111 = 7
+       ^^^ type 011 = not 4 means operator
+          ^ length type ID = 1 = next 11 bits = number that represents the number of the contained sub-packets
+           ^^^^^^^^^^^ 00000000011 = 3 sub-packets contained
+    sub-packets:
+        01010000001100100000100011000001100000
+        ^^^ version 010 = 2
+           ^^^ type 100 = 4 = literal value
+              00001 = last value is 0001
+    > sub-packet 1 total value = 0001 = 1
+        100100000100011000001100000
+        100 version = 4
+           100 type = 4 = literal
+              00010 = last value is 0010
+    > sub-packet 2 total value = 0010 = 2
+        0011000001100000
+        001 version = 1
+           100 type = 4 = literal
+              00011 value = 0011
+    > sub-packet 3 total value = 0011 = 3
+        00000 extra bits
+
+Part 1
+Decode the structure of your hexadecimal-encoded BITS transmission; what do you get if you add up the version numbers in all packets?
+
+Part 2
+What do you get if you evaluate the expression represented by your hexadecimal-encoded BITS transmission?
+
+Operator Types
+0 = sum
+1 = product
+2 - min
+3 = max
+5 = a greater than b ? (1, 0)
+6 = less than ^
+7 = equals ^
