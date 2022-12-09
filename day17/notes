@@ -10,6 +10,18 @@ the probe must be on some trajectory that causes it to be within a target area a
 
 If you're going to fire a highly scientific probe out of a super cool probe launcher, you might as well do it with style. How high can you make the probe go while still reaching the target area?
 
+Notes notes notes
+x and y movement are independent. there is no way for x movement to modify a y, and vice versa
+x always eventually stops. once it stops, it spends infinity steps at that stopping point
+y never stops, but it does peak
+
+y movement is surprisingly easy to calculate:
+- what goes up at a starting speed, comes back down at that speed. just like real gravity
+so if my target is -100 from my current position, the max upward speed I can launch is +99
+- lauch at +99 -> will be going -99 when it passes me on the way down
+- accelerates -1 per step = the next step will be from me at 0 to (me-100)
+yay for finding upper bounds to launch speeds!
+
 Part 1
 Find the initial velocity that causes the probe to reach the highest y position and still eventually be within the target area after any step. What is the highest y position it reaches on this trajectory?
 
