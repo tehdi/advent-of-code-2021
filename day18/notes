@@ -55,3 +55,7 @@ final sum   [[[[0,7],4],[[7,8],[6,0]]],[8,1]]
 
 Part 1
 Add up all of the snailfish numbers in the order they appear (always reducing fully before adding the next number). What is the magnitude of the final sum?
+
+Part 2
+What is the largest magnitude of any sum of two different snailfish numbers from the homework assignment?
+Note that snailfish addition is not commutative - that is, x + y and y + x can produce different results.
