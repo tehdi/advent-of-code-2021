@@ -29,14 +29,11 @@ class Pair:
         self.left = left
         self.right = right
         self.parent = parent
-        self.level = 0
         self.id = Pair.id
         Pair.id += 1
 
     def plus(self, other):
-        root = Pair(None)
-        root.left = self
-        root.right = other
+        root = Pair(None, self, other)
         self.parent = root
         other.parent = root
         root.reduce()
@@ -47,14 +44,14 @@ class Pair:
         if level >= 4 : return True
         for side in [self.left, self.right]:
             if type(side) == Pair:
-                logging.debug(f"{side.pretty()} is at level {level + 1}")
+                # logging.debug(f"{side.pretty()} is at level {level + 1}")
                 if level >= 3:
-                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {level + 1}")
+                    # logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {level + 1}")
                     return True
                 elif side.can_explode(level + 1):
-                    logging.debug(f"{self.pretty()} can explode because it contains something explodable")
+                    # logging.debug(f"{self.pretty()} can explode because it contains something explodable")
                     return True
-        logging.debug(f"{self.pretty()} can't explode")
+        # logging.debug(f"{self.pretty()} can't explode")
         return False
 
     def explode(self, level):
@@ -100,6 +97,11 @@ class Pair:
             node = self.parent
             if type(node.left) == int:
                 node.left += value
+                return
+            node = node.left
+            while type(node.right) == Pair:
+                node = node.right
+            node.right += value
 
     def add_to_next(self, value, origin):
         # if I'm the left, go up, right, then left until I come to an int
@@ -107,6 +109,12 @@ class Pair:
             node = self.parent
             if type(node.right) == int:
                 node.right += value
+                return
+            node = node.right
+            while type(node.left) == Pair:
+                node = node.left
+            node.left += value
+            return
         
         # if I'm the right, go up at least twice, continuing until a parent has a right that isn't the path I just came up
         # in other words, until the parent isn't a left
@@ -121,36 +129,42 @@ class Pair:
                 previous_id = node.id
                 node = node.parent
                 if node is None: return
+                if type(node.right) == int:
+                    node.right += value
+                    return
             node = node.right
             while type(node.left) == Pair:
                 node = node.left
             node.left += value
-            return
 
     def can_split(self):
         # if any contained number >=10, can split
         for side in [self.left, self.right]:
             if type(side) == int and side >= 10:
-                logging.debug(f"{self.pretty()} can split because it contains {side}")
+                # logging.debug(f"{self.pretty()} can split because it contains {side}")
                 return True
             elif type(side) == Pair and side.can_split():
-                logging.debug(f"{self.pretty()} can split because it contains something splittable")
+                # logging.debug(f"{self.pretty()} can split because it contains something splittable")
                 return True
-        logging.debug(f"{self.pretty()} can't split")
+        # logging.debug(f"{self.pretty()} can't split")
         return False
 
     def split(self):
         if type(self.left) == int and self.left >= 10:
             value = self.left
             splits = split_value(value)
+            # logging.debug(f"Splitting left {self.left} into {splits}")
             self.left = Pair(self, splits[0], splits[1])
+        elif type(self.left) == Pair and self.left.can_split():
+            # logging.debug(f"Split - going left from {self.pretty()} to {self.left.pretty()}")
+            self.left.split()
         elif type(self.right) == int and self.right >= 10:
             value = self.right
             splits = split_value(value)
+            # logging.debug(f"Splitting right {self.right} into {splits}")
             self.right = Pair(self, splits[0], splits[1])
-        elif type(self.left) == Pair and self.left.can_split():
-            self.left.split()
         elif type(self.right) == Pair and self.right.can_split():
+            # logging.debug(f"Split - going right from {self.pretty()} to {self.right.pretty()}")
             self.right.split()
 
     def reduce(self):
@@ -159,11 +173,11 @@ class Pair:
             while self.can_explode(0):
                 logging.debug(f"Before explode: {self.pretty()}")
                 self.explode(0)
-                logging.debug(f"After explode: {self.pretty()}")
+                # logging.debug(f"After explode:  {self.pretty()}")
             if self.can_split():
-                logging.debug(f"Before split: {self.pretty()}")
+                logging.debug(f"Before split:   {self.pretty()}")
                 self.split()
-                logging.debug(f"After split: {self.pretty()}")
+                # logging.debug(f"After split:  {self.pretty()}")
 
     def magnitude(self):
         left_value = self.left if type(self.left) == int else self.left.magnitude()
@@ -176,6 +190,7 @@ class Pair:
         return f"[{left},{right}]"
 
 def split_value(value):
+    # eg. 11 => [5, 6]
     left = value // 2
     right = value - left
     return left, right
@@ -241,10 +256,12 @@ if __name__ == '__main__':
         # END for char in line
         if root is None:
             root = line_root
+            # logging.debug(f"First line: {root.pretty()}")
         else:
             root = root.plus(line_root)
+            logging.debug(f"After adding a new line and reducing: {root.pretty()}")
     # END for line in input_data
-    root.reduce()
+    # root.reduce() # is included in plus()
     logging.info(f"Sum: {root.pretty()}")
     logging.info(f"Magnitude: {root.magnitude()}")
 
