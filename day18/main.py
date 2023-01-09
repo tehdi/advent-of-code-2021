@@ -13,13 +13,14 @@ def configure_logging(verbose, output_file):
         logging.basicConfig(
             format='%(message)s',
             level=log_level,
-            filename=output_file
+            filename=output_file,
+            filemode='w'
         )
 
 class Pair:
-    def __init__(self, parent):
-        self.left = None
-        self.right = None
+    def __init__(self, parent, left=None, right=None):
+        self.left = left
+        self.right = right
         self.parent = parent
 
     def plus(self, other):
@@ -31,8 +32,44 @@ class Pair:
         root.reduce()
         return root
 
-    def reduce(self):
+    def can_explode(self):
+        # if nested 4+, can explode
         pass
+
+    def can_split(self):
+        # if any contained number >=10, can split
+        for side in [self.left, self.right]:
+            if type(side) == int and side >= 10:
+                logging.debug(f"{self.pretty()} can split because it contains {side}")
+                return True
+            elif type(side) == Pair and side.can_split():
+                logging.debug(f"{self.pretty()} can split because it has something splittable nested")
+                return True
+        logging.debug(f"{self.pretty()} can't split")
+        return False
+
+    def split(self):
+        if type(self.left) == int and self.left >= 10:
+            value = self.left
+            splits = split_value(value)
+            self.left = Pair(self, splits[0], splits[1])
+        elif type(self.right) == int and self.right >= 10:
+            value = self.right
+            splits = split_value(value)
+            self.right = Pair(self, splits[0], splits[1])
+        elif type(self.left) == Pair and self.left.can_split():
+            self.left.split()
+        elif type(self.right) == Pair and self.right.can_split():
+            self.right.split()
+
+    def reduce(self):
+        # always look for an explosion before looking for a split
+        while self.can_explode() or self.can_split():
+            while self.can_explode(): self.explode()
+            if self.can_split():
+                logging.debug(f"Before split: {self.pretty()}")
+                self.split()
+                logging.debug(f"After split: {self.pretty()}")
 
     def magnitude(self):
         left_value = self.left if type(self.left) == int else self.left.magnitude()
@@ -42,7 +79,12 @@ class Pair:
     def pretty(self):
         left = self.left if type(self.left) == int else self.left.pretty() if type(self.left) == Pair else ''
         right = self.right if type(self.right) == int else self.right.pretty() if type(self.right) == Pair else ''
-        return f"[{left}, {right}]"
+        return f"[{left},{right}]"
+
+def split_value(value):
+    left = value // 2
+    right = value - left
+    return left, right
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -108,6 +150,7 @@ if __name__ == '__main__':
         else:
             root = root.plus(line_root)
     # END for line in input_data
+    root.reduce()
     logging.debug(f"Sum: {root.pretty()}")
     logging.info(f"Magnitude: {root.magnitude()}")
 
@@ -117,3 +160,6 @@ if __name__ == '__main__':
 # testsum2, testmagnitude2:
 #   sum = [[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]
 #   magnitude = 3488
+# testsplit: [[[[0,7],4],[15,[0,13]]],[1,1]]
+#   after first split: [[[[0,7],4],[[7,8],[0,13]]],[1,1]]
+#   after second split: [[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]
