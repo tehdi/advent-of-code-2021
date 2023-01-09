@@ -1,6 +1,7 @@
 import time
 import logging
 import argparse
+from enum import Enum
 
 def configure_logging(verbose, output_file):
     log_level = logging.DEBUG if verbose else logging.INFO
@@ -17,12 +18,20 @@ def configure_logging(verbose, output_file):
             filemode='w'
         )
 
+class Side(Enum):
+    LEFT = 0,
+    RIGHT = 1
+
 class Pair:
+    id = 0
+
     def __init__(self, parent, left=None, right=None):
         self.left = left
         self.right = right
         self.parent = parent
         self.level = 0
+        self.id = Pair.id
+        Pair.id += 1
 
     def plus(self, other):
         root = Pair(None)
@@ -33,40 +42,90 @@ class Pair:
         root.reduce()
         return root
 
-    def update_levels(self):
-        if self.parent is None:
-            self.level = 0
-        else:
-            self.level = self.parent.level + 1
-        if type(self.left) is Pair: self.left.update_levels()
-        if type(self.right) is Pair: self.right.update_levels()
-
-    def can_explode(self):
-        # if nested 4+, can explode'
+    def can_explode(self, level):
+        # if nested 4+, can explode
+        if level >= 4 : return True
         for side in [self.left, self.right]:
-            logging.debug(f"{side.pretty()} is at level {side.level}")
             if type(side) == Pair:
-                if side.level >= 4:
-                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {side.level}")
+                logging.debug(f"{side.pretty()} is at level {level + 1}")
+                if level >= 3:
+                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {level + 1}")
                     return True
-                elif side.can_explode():
+                elif side.can_explode(level + 1):
                     logging.debug(f"{self.pretty()} can explode because it contains something explodable")
                     return True
         logging.debug(f"{self.pretty()} can't explode")
         return False
 
-    def explode(self):
-        for side in [self.left, self.right]:
-            logging.debug(f"{side.pretty()} is at level {side.level}")
-            if type(side) == Pair:
-                if side.level >= 4:
-                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {side.level}")
-                    return True
-                elif side.can_explode():
-                    logging.debug(f"{self.pretty()} can explode because it contains something explodable")
-                    return True
-        logging.debug(f"{self.pretty()} can't explode")
-        return False
+    def explode(self, level):
+        if type(self.left) == Pair and level >= 3:
+            self.left.add_to_previous(self.left.left, Side.LEFT)
+            self.left.add_to_next(self.left.right, Side.LEFT)
+            self.left = 0
+        elif type(self.right) == Pair and level >= 3:
+            self.right.add_to_previous(self.right.left, Side.RIGHT)
+            self.right.add_to_next(self.right.right, Side.RIGHT)
+            self.right = 0
+        elif type(self.left) == Pair and self.left.can_explode(level + 1):
+            self.left.explode(level + 1)
+        elif type(self.right) == Pair and self.right.can_explode(level + 1):
+            self.right.explode(level + 1)
+
+    def add_to_previous(self, value, origin):
+        # left is the hard one. need to go up at least two, then continue until I find a left that isn't where I just came from
+        # then right until I come to an int
+        # if I get to the root node without finding any left paths, then there's no value to add to so I'm done
+        if origin == Side.LEFT:
+            node = self.parent.parent
+            previous_id = self.parent.id
+            if type(node.left) == int:
+                node.left += value
+                return
+            while node.left.id == previous_id:
+                previous_id = node.id
+                node = node.parent
+                if node is None: return
+                if type(node.left) == int:
+                    node.left += value
+                    return
+            node = node.left
+            while type(node.right) == Pair:
+                node = node.right
+            node.right += value
+            return
+
+        # if I'm the right, then go up to my parent then left
+        # then right until I come to an int
+        if origin == Side.RIGHT:
+            node = self.parent
+            if type(node.left) == int:
+                node.left += value
+
+    def add_to_next(self, value, origin):
+        # if I'm the left, go up, right, then left until I come to an int
+        if origin == Side.LEFT:
+            node = self.parent
+            if type(node.right) == int:
+                node.right += value
+        
+        # if I'm the right, go up at least twice, continuing until a parent has a right that isn't the path I just came up
+        # in other words, until the parent isn't a left
+        # then go one right, then left until I come to an int
+        if origin == Side.RIGHT:
+            node = self.parent.parent
+            previous_id = self.parent.id
+            if type(node.right) == int:
+                node.right += value
+                return
+            while node.right.id == previous_id:
+                previous_id = node.id
+                node = node.parent
+                if node is None: return
+            node = node.right
+            while type(node.left) == Pair:
+                node = node.left
+            node.left += value
+            return
 
     def can_split(self):
         # if any contained number >=10, can split
@@ -95,21 +154,16 @@ class Pair:
             self.right.split()
 
     def reduce(self):
-        if self.can_explode():
-            logging.debug(f"Before explode: {self.pretty()}")
-            self.explode()
-            logging.debug(f"After explode: {self.pretty()}")
-
-        # # always look for an explosion before looking for a split
-        # while self.can_explode() or self.can_split():
-        #     while self.can_explode():
-        #         logging.debug(f"Before explode: {self.pretty()}")
-        #         self.explode()
-        #         logging.debug(f"After explode: {self.pretty()}")
-        #     if self.can_split():
-        #         logging.debug(f"Before split: {self.pretty()}")
-        #         self.split()
-        #         logging.debug(f"After split: {self.pretty()}")
+        # always look for an explosion before looking for a split
+        while self.can_explode(0) or self.can_split():
+            while self.can_explode(0):
+                logging.debug(f"Before explode: {self.pretty()}")
+                self.explode(0)
+                logging.debug(f"After explode: {self.pretty()}")
+            if self.can_split():
+                logging.debug(f"Before split: {self.pretty()}")
+                self.split()
+                logging.debug(f"After split: {self.pretty()}")
 
     def magnitude(self):
         left_value = self.left if type(self.left) == int else self.left.magnitude()
@@ -190,9 +244,8 @@ if __name__ == '__main__':
         else:
             root = root.plus(line_root)
     # END for line in input_data
-    root.update_levels()
     root.reduce()
-    logging.debug(f"Sum: {root.pretty()}")
+    logging.info(f"Sum: {root.pretty()}")
     logging.info(f"Magnitude: {root.magnitude()}")
 
 # testsum, testmagnitude:
@@ -201,6 +254,8 @@ if __name__ == '__main__':
 # testsum2, testmagnitude2:
 #   sum = [[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]
 #   magnitude = 3488
+# testsum3:
+#   sum = [[[[0,7],4],[[7,8],[6,0]]],[8,1]]
 # testsplit: [[[[0,7],4],[15,[0,13]]],[1,1]]
 #   after first split: [[[[0,7],4],[[7,8],[0,13]]],[1,1]]
 #   after second split: [[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]
