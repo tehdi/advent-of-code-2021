@@ -22,6 +22,7 @@ class Pair:
         self.left = left
         self.right = right
         self.parent = parent
+        self.level = 0
 
     def plus(self, other):
         root = Pair(None)
@@ -32,9 +33,40 @@ class Pair:
         root.reduce()
         return root
 
+    def update_levels(self):
+        if self.parent is None:
+            self.level = 0
+        else:
+            self.level = self.parent.level + 1
+        if type(self.left) is Pair: self.left.update_levels()
+        if type(self.right) is Pair: self.right.update_levels()
+
     def can_explode(self):
-        # if nested 4+, can explode
-        pass
+        # if nested 4+, can explode'
+        for side in [self.left, self.right]:
+            logging.debug(f"{side.pretty()} is at level {side.level}")
+            if type(side) == Pair:
+                if side.level >= 4:
+                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {side.level}")
+                    return True
+                elif side.can_explode():
+                    logging.debug(f"{self.pretty()} can explode because it contains something explodable")
+                    return True
+        logging.debug(f"{self.pretty()} can't explode")
+        return False
+
+    def explode(self):
+        for side in [self.left, self.right]:
+            logging.debug(f"{side.pretty()} is at level {side.level}")
+            if type(side) == Pair:
+                if side.level >= 4:
+                    logging.debug(f"{self.pretty()} can explode on {side.pretty()} at level {side.level}")
+                    return True
+                elif side.can_explode():
+                    logging.debug(f"{self.pretty()} can explode because it contains something explodable")
+                    return True
+        logging.debug(f"{self.pretty()} can't explode")
+        return False
 
     def can_split(self):
         # if any contained number >=10, can split
@@ -43,7 +75,7 @@ class Pair:
                 logging.debug(f"{self.pretty()} can split because it contains {side}")
                 return True
             elif type(side) == Pair and side.can_split():
-                logging.debug(f"{self.pretty()} can split because it has something splittable nested")
+                logging.debug(f"{self.pretty()} can split because it contains something splittable")
                 return True
         logging.debug(f"{self.pretty()} can't split")
         return False
@@ -63,13 +95,21 @@ class Pair:
             self.right.split()
 
     def reduce(self):
-        # always look for an explosion before looking for a split
-        while self.can_explode() or self.can_split():
-            while self.can_explode(): self.explode()
-            if self.can_split():
-                logging.debug(f"Before split: {self.pretty()}")
-                self.split()
-                logging.debug(f"After split: {self.pretty()}")
+        if self.can_explode():
+            logging.debug(f"Before explode: {self.pretty()}")
+            self.explode()
+            logging.debug(f"After explode: {self.pretty()}")
+
+        # # always look for an explosion before looking for a split
+        # while self.can_explode() or self.can_split():
+        #     while self.can_explode():
+        #         logging.debug(f"Before explode: {self.pretty()}")
+        #         self.explode()
+        #         logging.debug(f"After explode: {self.pretty()}")
+        #     if self.can_split():
+        #         logging.debug(f"Before split: {self.pretty()}")
+        #         self.split()
+        #         logging.debug(f"After split: {self.pretty()}")
 
     def magnitude(self):
         left_value = self.left if type(self.left) == int else self.left.magnitude()
@@ -150,6 +190,7 @@ if __name__ == '__main__':
         else:
             root = root.plus(line_root)
     # END for line in input_data
+    root.update_levels()
     root.reduce()
     logging.debug(f"Sum: {root.pretty()}")
     logging.info(f"Magnitude: {root.magnitude()}")
@@ -163,3 +204,6 @@ if __name__ == '__main__':
 # testsplit: [[[[0,7],4],[15,[0,13]]],[1,1]]
 #   after first split: [[[[0,7],4],[[7,8],[0,13]]],[1,1]]
 #   after second split: [[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]
+# testexplode: [[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]
+#   after first explode: [[[[0,7],4],[7,[[8,4],9]]],[1,1]]
+#   after second explode: [[[[0,7],4],[15,[0,13]]],[1,1]]
